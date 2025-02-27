@@ -3,18 +3,41 @@ import { OrbitControls } from '../node_modules/three/examples/jsm/controls/Orbit
 
 
 //hard way to load a texture on a geometry
-//const img = new Image()
-//const texture = new THREE.Texture(img);
-//
-//img.onload = () => {
-//  texture.needsUpdate = true;
-//}
-//
-//img.src = '../public/makka-madina-quran-box-with-reehal-401.jpg'
+const img = new Image()
+const texture = new THREE.Texture(img);
+img.onload = () => {
+  texture.needsUpdate = true;
+}
+img.src = '../public/001.jpg'
+
+
 
 //easier wau to load a texture on a geometry using the textureLoader cladd instance
 const textureLoader = new THREE.TextureLoader(); //creating a instance of the textureLoader class
-const texture = textureLoader.load('../public/000.jpg')  //load the texture using the function load by providing the url or path of the image
+const  colorTexture = textureLoader.load('../public/000.jpg')  //load the texture using the function load by providing the url or path of the image
+colorTexture.repeat.x= 2; //repeating texture on the x axis
+colorTexture.repeat.y= 3; //repeating texture on the y axis
+
+//by deafault the texture doesnt repeat and last pixel get stretched we can change that with thr help of RepeatWrapping on the wrapS and wrapT properties
+colorTexture.wrapS = THREE.RepeatWrapping 
+colorTexture.wrapT = THREE.RepeatWrapping
+
+//We can alternate the direction with THREE.MirroredRepeatWrapping
+colorTexture.wrapS = THREE.MirroredRepeatWrapping
+colorTexture.wrapT = THREE.MirroredRepeatWrapping
+
+//using offest to move or displace the texture from its orignal position in x and y axis
+colorTexture.offset.x = 0.5;
+colorTexture.offset.y = 0.5;
+
+//we can also rotate the texture by using the rotation propertie
+colorTexture.rotation = 0.5
+
+//we can change the pivot point with the center propetie which is a vector2
+colorTexture.rotation = Math.PI / 4
+colorTexture.center.x = 0.05 
+colorTexture.center.y = 0.05
+
 
 //defining sizes
 const sizes = {
@@ -31,8 +54,9 @@ const scene = new THREE.Scene();
 
 
 //creating a object/Mesh 
-const geometry = new THREE.BoxGeometry(1, 1, 1 , 5, 5, 5);
-const material = new THREE.MeshBasicMaterial({ map: texture , wireframe: true});
+const geometry = new THREE.BoxGeometry(1, 1, 1 );
+//const geometry = new THREE.SphereGeometry(1, 32, 32 );
+const material = new THREE.MeshBasicMaterial({ map: colorTexture , wireframe: false});
 const cube = new THREE.Mesh(geometry , material);
 scene.add(cube);
 
@@ -78,12 +102,12 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 function animate() {
 
-  //renderer.setAnimationLoop(animate)
-	//cube.rotation.x += 0.005;
-	//cube.rotation.y += 0.005;
+  renderer.setAnimationLoop(animate)
+	cube.rotation.x += 0.005;
+	cube.rotation.y += 0.005;
 
 	renderer.render( scene , camera);
 
 }
 
-//animate()
+animate()
